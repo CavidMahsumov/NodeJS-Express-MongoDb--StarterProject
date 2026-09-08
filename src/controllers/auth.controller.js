@@ -2,6 +2,7 @@ require('express-async-errors');
 const user = require('../models/user.model');
 const bcrypt = require('bcrypt');
 const APIError = require('../utils/errors');
+const Response = require('../utils/response');
 const login = async (req,res)=>{
     console.log(req.body);
     return res.json(req.body);
@@ -17,24 +18,19 @@ const register=async (req,res)=>{
     req.body.password = await bcrypt.hash(req.body.password, 10);
     console.log("Hashed password: ", req.body.password);
 
-    try{
+  
         const newUser = new user(req.body);
 
         await newUser.save()
         .then((response)=>{
-            return res.staus(201).json({
-                success:true,
-                data:response,
-                message:"User created successfully"
-            })
+            return new Response(response, "User created successfully").Created(res);
+
         })
         .catch((err)=>{
-            console.log(err);
+            throw new APIError("User creation failed", 400);
         })  
-    }
-    catch(err){
-        console.log(err);
-    }
+    
+ 
 
 
     console.log(req.body);
