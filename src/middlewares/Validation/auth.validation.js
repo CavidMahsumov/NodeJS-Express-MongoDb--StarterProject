@@ -16,10 +16,10 @@ class AuthValidation{
                 }),
                 lastname:joi.string().trim().min(3).max(100).required().messages({
                     "string.base":"Last Name must be a string",
-                    "string.empty":"Last Name is requireddddddd",
+                    "string.empty":"Last Name is required",
                     "string.min":"Last Name must be at least 3 characters",
                     "string.max":"Last Name must be at most 100 characters",
-                    "string.required":"Last Name is requiredddddddd"
+                    "string.required":"Last Name is required"
                 }), 
                 email:joi.string().trim().email().required().min(3).max(100).messages({
                     "string.base":"Email must be a string",
@@ -40,6 +40,33 @@ class AuthValidation{
             throw new APIError(err.details[0].message);    
         }
         next();  
+    }
+    static LoginValidation = async (req,res,next)=>{
+        try{
+            await joi.object({
+             email:joi.string().trim().email().required().min(3).max(100).messages({
+                    "string.base":"Email must be a string",
+                    "string.empty":"Email is required",
+                    "string.email":"Email must be a valid email",
+                    "string.required":"Email is required"
+                }),
+                password:joi.string().trim().min(6).max(36).required().messages({
+                    "string.base":"Password must be a string",
+                    "string.empty":"Password is required",
+                    "string.min":"Password must be at least 6 characters",
+                    "string.max":"Password must be at most 36 characters",
+                    "string.required":"Password is required"
+                })
+            }).validateAsync(req.body)
+        }
+        catch(err){
+            if(err.details && err.details[0].message){
+
+                throw new APIError(err.details[0].message,400);    
+            }
+            else throw new APIError("Invalid request",400);
+        }
+       next();  
     }
 }
 
