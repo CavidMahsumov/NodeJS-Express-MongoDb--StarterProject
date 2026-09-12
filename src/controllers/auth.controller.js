@@ -3,7 +3,7 @@ const user = require('../models/user.model');
 const bcrypt = require('bcrypt');
 const APIError = require('../utils/errors');
 const Response = require('../utils/response');
-const createToken = require('../middlewares/auth');
+const {createToken} = require('../middlewares/auth');
 const login = async (req,res)=>{
     const {email,password} = req.body;
     const userExists = await user.findOne({email});
@@ -49,8 +49,13 @@ const register=async (req,res)=>{
     return res.json(req.body);
 }
 
+const me = async(req,res)=>{
+    console.log("At me")
+    return new Response(req.user).successRespone(res);
+}
 
 module.exports={
     login,
-    register
+    register,
+    me
 }
