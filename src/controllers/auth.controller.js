@@ -5,6 +5,9 @@ const APIError = require('../utils/errors');
 const Response = require('../utils/response');
 const {createToken} = require('../middlewares/auth');
 const login = async (req,res)=>{
+
+    console.log("login")
+
     const {email,password} = req.body;
     const userExists = await user.findOne({email});
     console.log("User exists: ", userExists);
